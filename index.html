@@ -3,50 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ressources Logistique & Transport</title>
+<title>Entraînement CACES R489</title>
 <style>
-  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #f4f6f9; color: #1f2933; line-height: 1.6; }
-  header { background: #1e3a5f; color: #fff; padding: 40px 20px; text-align: center; }
-  header h1 { margin: 0 0 8px; font-size: 2rem; }
-  header p { margin: 0; opacity: 0.85; }
-  main { max-width: 900px; margin: 0 auto; padding: 30px 20px; }
-  .carte { background: #fff; border-radius: 8px; padding: 20px 25px; margin-bottom: 25px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border-left: 5px solid #f28c28; }
-  .carte h2 { margin-top: 0; color: #1e3a5f; }
-  ul { padding-left: 20px; }
-  a { color: #1e6fb8; }
-  .bientot { color: #7b8794; font-style: italic; }
-  footer { text-align: center; padding: 20px; font-size: 0.85rem; color: #7b8794; }
+  :root { --bleu:#1e3a5f; --orange:#f28c28; --vert:#1f9d55; --rouge:#d64545; --gris:#6b7785; --fond:#f4f6f9; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:Arial, Helvetica, sans-serif; background:var(--fond); color:#1f2933; line-height:1.5; }
+  header { background:var(--bleu); color:#fff; padding:28px 20px; text-align:center; border-bottom:6px solid var(--orange); }
+  header h1 { margin:0 0 6px; font-size:1.8rem; }
+  header p { margin:0; opacity:.85; }
+  main { max-width:760px; margin:0 auto; padding:24px 16px 40px; }
+  .carte { background:#fff; border-radius:10px; padding:22px; margin-bottom:20px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  h2 { margin-top:0; color:var(--bleu); font-size:1.25rem; }
+  label { display:block; font-weight:bold; margin:14px 0 6px; }
+  input, select { width:100%; padding:12px; font-size:1rem; border:2px solid #d5dbe3; border-radius:8px; }
+  input:focus, select:focus { outline:none; border-color:var(--bleu); }
+  .aide { font-size:.85rem; color:var(--gris); margin-top:4px; }
+  .sujet { display:block; width:100%; text-align:left; background:#fff; border:2px solid #d5dbe3; border-radius:10px; padding:16px; margin-top:12px; font-size:1rem; cursor:pointer; }
+  .sujet:hover { border-color:var(--orange); }
+  .sujet strong { color:var(--bleu); }
+  .btn { background:var(--bleu); color:#fff; border:none; border-radius:8px; padding:14px 22px; font-size:1rem; font-weight:bold; cursor:pointer; }
+  .btn:disabled { background:#aab4c0; cursor:not-allowed; }
+  .btn.secondaire { background:#fff; color:var(--bleu); border:2px solid var(--bleu); }
+  .barre { height:10px; background:#e3e8ef; border-radius:5px; overflow:hidden; margin-bottom:14px; }
+  .barre div { height:100%; background:var(--orange); transition:width .3s; }
+  .compteur { color:var(--gris); font-size:.9rem; margin-bottom:6px; }
+  .question { font-size:1.15rem; font-weight:bold; margin-bottom:16px; }
+  .choix { display:block; width:100%; text-align:left; background:#fff; border:2px solid #d5dbe3; border-radius:8px; padding:14px; margin-bottom:10px; font-size:1rem; cursor:pointer; }
+  .choix:hover { border-color:var(--bleu); }
+  .choix.choisi { border-color:var(--bleu); background:#e8eef6; }
+  .actions { display:flex; justify-content:space-between; gap:10px; margin-top:16px; }
+  .score { text-align:center; font-size:3rem; font-weight:bold; margin:10px 0; }
+  .reussi { color:var(--vert); } .echec { color:var(--rouge); }
+  .envoi { text-align:center; padding:10px; border-radius:8px; margin:10px 0; font-size:.95rem; }
+  .envoi.ok { background:#e6f6ec; color:var(--vert); } .envoi.attente { background:#fff4e5; color:#a15c00; } .envoi.ko { background:#fdecec; color:var(--rouge); }
+  .corr { border-left:5px solid; padding:10px 14px; margin-bottom:12px; background:#fafbfc; border-radius:0 8px 8px 0; }
+  .corr.bon { border-color:var(--vert); } .corr.faux { border-color:var(--rouge); }
+  .corr p { margin:4px 0; }
+  .expl { color:var(--gris); font-size:.92rem; }
+  .cache { display:none; }
+  footer { text-align:center; color:var(--gris); font-size:.8rem; padding:16px; }
 </style>
 </head>
 <body>
 <header>
-  <h1>Ressources Logistique & Transport</h1>
-  <p>Supports de cours pour le BTS GTLA et le Bac Pro Métiers de la logistique</p>
+  <h1>Entraînement CACES R489</h1>
+  <p>QCM théoriques pour les élèves de Bac Pro Logistique</p>
 </header>
+
 <main>
-  <section class="carte">
-    <h2>BTS GTLA</h2>
-    <p>Gestion des Transports et Logistique Associée</p>
-    <ul>
-      <li class="bientot">Cours et études de cas : bientôt disponibles</li>
-      <li class="bientot">QCM d'entraînement : bientôt disponibles</li>
-    </ul>
+  <!-- Écran 1 : identification -->
+  <section id="ecran-accueil" class="carte">
+    <h2>1. Qui es-tu ?</h2>
+    <label for="nom">Prénom et initiale du nom</label>
+    <input id="nom" type="text" maxlength="40" placeholder="Exemple : Karim B." autocomplete="off">
+    <div class="aide">Écris seulement ton prénom et l’initiale de ton nom.</div>
+    <label for="classe">Classe</label>
+    <select id="classe">
+      <option value="">-- Choisis ta classe --</option>
+      <option>1BACLOG</option>
+      <option>TBACLOG</option>
+      <option>Autre</option>
+    </select>
+    <h2 style="margin-top:26px">2. Choisis un sujet</h2>
+    <div id="liste-sujets"></div>
+    <div id="msg-accueil" class="aide" style="color:var(--rouge)"></div>
   </section>
-  <section class="carte">
-    <h2>Bac Pro Métiers de la logistique</h2>
-    <ul>
-      <li class="bientot">Fiches missions et séquences : bientôt disponibles</li>
-      <li class="bientot">Préparation aux épreuves : bientôt disponible</li>
-    </ul>
+
+  <!-- Écran 2 : questions -->
+  <section id="ecran-quiz" class="carte cache">
+    <div class="compteur" id="compteur"></div>
+    <div class="barre"><div id="progression"></div></div>
+    <div class="question" id="question"></div>
+    <div id="choix"></div>
+    <div class="actions">
+      <button class="btn secondaire" id="btn-prec">← Précédente</button>
+      <button class="btn" id="btn-suiv" disabled>Suivante →</button>
+    </div>
   </section>
-  <section class="carte">
-    <h2>Liens utiles</h2>
-    <ul>
-      <li><a href="https://eduscol.education.fr" target="_blank">Eduscol</a> : ressources officielles de l'Éducation nationale</li>
-      <li><a href="https://www.onisep.fr" target="_blank">Onisep</a> : orientation, formations et métiers</li>
-    </ul>
+
+  <!-- Écran 3 : résultat -->
+  <section id="ecran-resultat" class="cache">
+    <div class="carte" style="text-align:center">
+      <h2 id="res-titre"></h2>
+      <div class="score" id="res-score"></div>
+      <div id="res-message"></div>
+      <div class="envoi attente" id="res-envoi">Envoi de ta note au professeur…</div>
+      <button class="btn" id="btn-recommencer" style="margin-top:10px">Faire un autre sujet</button>
+    </div>
+    <div class="carte">
+      <h2>Correction</h2>
+      <div id="res-correction"></div>
+    </div>
   </section>
 </main>
-<footer>Ressources pédagogiques en logistique et transport</footer>
+<footer>Entraînement – le seuil de réussite indiqué (14/20) est un repère, pas une note officielle.</footer>
+
+<script src="sujets.js"></script>
+<script>
+// Google Form qui reçoit les résultats
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSejRBhQFCmr4dJ2LnD1WIToEpmIb-2YtmrfCsSR0_1lrRGSPA/formResponse";
+const CHAMP_NOM = "entry.609267388";
+const CHAMP_CLASSE = "entry.1583235432";
+const CHAMP_SUJET = "entry.1448527077";
+const CHAMP_NOTE = "entry.803834284";
+const SEUIL = 14;
+
+let eleve = {}, sujet = null, questions = [], reponses = [], index = 0;
+
+function $(id) { return document.getElementById(id); }
+function montrer(id) {
+  ["ecran-accueil","ecran-quiz","ecran-resultat"].forEach(function(e){ $(e).classList.toggle("cache", e !== id); });
+  window.scrollTo(0,0);
+}
+function melanger(tab) {
+  const t = tab.slice();
+  for (let i = t.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const x = t[i]; t[i] = t[j]; t[j] = x; }
+  return t;
+}
+
+// Liste des sujets
+SUJETS.forEach(function(s){
+  const b = document.createElement("button");
+  b.className = "sujet";
+  b.innerHTML = "<strong>" + s.titre + "</strong><br><span class='aide'>" + s.questions.length + " questions</span>";
+  b.onclick = function(){ demarrer(s); };
+  $("liste-sujets").appendChild(b);
+});
+
+function demarrer(s) {
+  const nom = $("nom").value.trim();
+  const classe = $("classe").value;
+  if (nom.length < 2 || !classe) { $("msg-accueil").textContent = "Indique ton prénom, l’initiale de ton nom et ta classe avant de choisir un sujet."; return; }
+  $("msg-accueil").textContent = "";
+  eleve = { nom: nom, classe: classe };
+  sujet = s;
+  // Les choix de réponse sont mélangés pour chaque question
+  questions = s.questions.map(function(q){
+    const ordre = melanger(q.c.map(function(_, i){ return i; }));
+    return { q: q.q, c: ordre.map(function(i){ return q.c[i]; }), a: ordre.indexOf(q.a), e: q.e };
+  });
+  reponses = new Array(questions.length).fill(null);
+  index = 0;
+  afficherQuestion();
+  montrer("ecran-quiz");
+}
+
+function afficherQuestion() {
+  const q = questions[index];
+  $("compteur").textContent = sujet.titre + " — Question " + (index + 1) + " / " + questions.length;
+  $("progression").style.width = ((index) / questions.length * 100) + "%";
+  $("question").textContent = q.q;
+  $("choix").innerHTML = "";
+  q.c.forEach(function(texte, i){
+    const b = document.createElement("button");
+    b.className = "choix" + (reponses[index] === i ? " choisi" : "");
+    b.textContent = String.fromCharCode(65 + i) + ". " + texte;
+    b.onclick = function(){ reponses[index] = i; afficherQuestion(); };
+    $("choix").appendChild(b);
+  });
+  $("btn-prec").style.visibility = index === 0 ? "hidden" : "visible";
+  $("btn-suiv").disabled = reponses[index] === null;
+  $("btn-suiv").textContent = index === questions.length - 1 ? "Terminer ✓" : "Suivante →";
+}
+
+$("btn-prec").onclick = function(){ if (index > 0) { index--; afficherQuestion(); } };
+$("btn-suiv").onclick = function(){
+  if (reponses[index] === null) return;
+  if (index < questions.length - 1) { index++; afficherQuestion(); }
+  else { terminer(); }
+};
+
+function terminer() {
+  let bonnes = 0;
+  questions.forEach(function(q, i){ if (reponses[i] === q.a) bonnes++; });
+  const note = Math.round(bonnes / questions.length * 20 * 10) / 10;
+  const reussi = note >= SEUIL;
+  $("res-titre").textContent = eleve.nom + " — " + sujet.titre;
+  $("res-score").textContent = note + " / 20";
+  $("res-score").className = "score " + (reussi ? "reussi" : "echec");
+  $("res-message").textContent = bonnes + " bonne(s) réponse(s) sur " + questions.length + ". " +
+    (reussi ? "Bravo, c’est réussi !" : "Pas encore : relis la correction et recommence.");
+
+  let html = "";
+  questions.forEach(function(q, i){
+    const ok = reponses[i] === q.a;
+    html += "<div class='corr " + (ok ? "bon" : "faux") + "'>" +
+      "<p><strong>" + (i + 1) + ". " + q.q + "</strong></p>" +
+      (ok ? "<p>✅ " + q.c[q.a] + "</p>"
+          : "<p>❌ Ta réponse : " + q.c[reponses[i]] + "</p><p>✅ Bonne réponse : " + q.c[q.a] + "</p>") +
+      "<p class='expl'>" + q.e + "</p></div>";
+  });
+  $("res-correction").innerHTML = html;
+  montrer("ecran-resultat");
+  envoyer(note, bonnes);
+}
+
+function envoyer(note, bonnes) {
+  const zone = $("res-envoi");
+  zone.className = "envoi attente";
+  zone.textContent = "Envoi de ta note au professeur…";
+  const donnees = new URLSearchParams();
+  donnees.append(CHAMP_NOM, eleve.nom);
+  donnees.append(CHAMP_CLASSE, eleve.classe);
+  donnees.append(CHAMP_SUJET, sujet.titre);
+  donnees.append(CHAMP_NOTE, note + "/20 (" + bonnes + "/" + questions.length + ")");
+  fetch(FORM_URL, { method: "POST", mode: "no-cors", body: donnees })
+    .then(function(){ zone.className = "envoi ok"; zone.textContent = "✓ Ta note a été envoyée à ton professeur."; })
+    .catch(function(){ zone.className = "envoi ko"; zone.textContent = "⚠ La note n’a pas pu être envoyée (problème de connexion). Montre cet écran à ton professeur."; });
+}
+
+$("btn-recommencer").onclick = function(){ montrer("ecran-accueil"); };
+</script>
 </body>
 </html>
