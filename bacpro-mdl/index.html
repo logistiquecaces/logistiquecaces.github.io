@@ -82,6 +82,19 @@
   .corr p { margin:4px 0; white-space:pre-line; } .expl { color:var(--gris); font-size:.92rem; }
   footer { text-align:center; color:var(--gris); font-size:.8rem; padding:16px; }
   footer a { color:var(--gris); }
+  .doc-pfmp .champ { display:flex; gap:8px; margin:9px 0; align-items:flex-end; }
+  .doc-pfmp .champ span:first-child { white-space:nowrap; font-weight:bold; font-size:.95rem; }
+  .doc-pfmp .pointilles { flex:1; border-bottom:1px dotted #888; min-height:1.1em; }
+  .doc-pfmp .ligne { border-bottom:1px dotted #888; height:28px; }
+  .doc-pfmp .cadre { border:1px solid #aab4c0; border-radius:6px; height:170px; margin:8px 0; }
+  .doc-pfmp .encadre { background:#f4f6f9; border:1px solid #d5dbe3; border-radius:8px; padding:12px; }
+  .doc-pfmp .case { text-align:center; font-size:1.1rem; width:70px; }
+  .doc-pfmp .grille-pos th { font-size:.78rem; text-align:center; }
+  .doc-pfmp .grille-pos th:first-child { text-align:left; }
+  .doc-pfmp .sign td { height:80px; vertical-align:top; }
+  .doc-pfmp .petit { font-size:.85rem; color:var(--gris); }
+  .doc-pfmp .entete-doc { font-size:.8rem; color:var(--gris); border-bottom:2px solid var(--bleu); padding-bottom:4px; margin-top:0; }
+  .barre-doc { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
   @media print { header nav, .retour, .filtres, footer { display:none; } body { background:#fff; } .carte { box-shadow:none; } }
 </style>
 </head>
@@ -95,6 +108,7 @@
     <a href="#cours" data-onglet="cours">Cours</a>
     <a href="#scenarios" data-onglet="scenarios">Scénarios</a>
     <a href="#entrainements" data-onglet="entrainements">Entraînements</a>
+    <a href="#pfmp" data-onglet="pfmp">PFMP</a>
     <a href="#evaluation" data-onglet="evaluation">Évaluation</a>
   </nav>
 </header>
@@ -110,6 +124,7 @@
         <button class="tuile" onclick="location.hash='cours'"><span class="badge gris">Savoirs</span><strong>📘 Cours</strong>Une fiche par compétence, avec l'essentiel à retenir.</button>
         <button class="tuile" onclick="location.hash='scenarios'"><span class="badge gris">Pratique</span><strong>🏭 Scénarios</strong>Les missions dans nos entreprises : ÔFil de l'eau, Transport Express+, Logistique Services+, Biomarine.</button>
         <button class="tuile" onclick="location.hash='entrainements'"><span class="badge gris">Entraînement</span><strong>✅ Entraînements</strong>QCM corrigés. Ta note est envoyée au professeur.</button>
+        <button class="tuile" onclick="location.hash='pfmp'"><span class="badge gris">Stage</span><strong>🏢 PFMP</strong>Tous les documents de stage à imprimer : livrets, attestation, fiches.</button>
         <button class="tuile" onclick="location.hash='evaluation'"><span class="badge gris">Examen</span><strong>🎓 Guide d'évaluation</strong>Comment se passe chaque épreuve en CCF : E21, E22, E31, E32.</button>
       </div>
     </div>
@@ -160,6 +175,19 @@
       </div>
     </div>
     <div id="sc-detail" class="carte cache"></div>
+  </section>
+
+  <!-- PFMP -->
+  <section id="pfmp" class="onglet cache">
+    <div id="pfmp-liste">
+      <div class="carte">
+        <h2>Les documents de PFMP</h2>
+        <p>Tous les documents utiles avant, pendant et après tes périodes en entreprise. Ouvre un document puis clique sur <strong>Imprimer</strong>.</p>
+        <p class="aide">Ces documents complètent la convention de PFMP et le livret de compétences officiel du lycée, qui restent les documents de référence.</p>
+        <div class="grille" id="pfmp-grille"></div>
+      </div>
+    </div>
+    <div id="pfmp-detail" class="carte cache"></div>
   </section>
 
   <!-- ÉVALUATION -->
@@ -219,6 +247,7 @@
 <script src="scenarios.js"></script>
 <script src="entrainements.js"></script>
 <script src="evaluation.js"></script>
+<script src="pfmp.js"></script>
 <script>
 function $(id){ return document.getElementById(id); }
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
@@ -228,11 +257,12 @@ function liste(t){ return "<ul>"+t.map(function(x){ return "<li>"+x+"</li>"; }).
 /* ---------- Navigation par onglets ---------- */
 function router(){
   const h = (location.hash || "#accueil").slice(1).split("/");
-  const onglet = ["accueil","progression","cours","scenarios","entrainements","evaluation"].indexOf(h[0]) >= 0 ? h[0] : "accueil";
+  const onglet = ["accueil","progression","cours","scenarios","entrainements","pfmp","evaluation"].indexOf(h[0]) >= 0 ? h[0] : "accueil";
   document.querySelectorAll(".onglet").forEach(function(s){ s.classList.toggle("cache", s.id !== onglet); });
   document.querySelectorAll("nav a").forEach(function(a){ a.classList.toggle("actif", a.dataset.onglet === onglet); });
   if (onglet === "cours") { h[1] ? ouvrirCours(h[1]) : fermer("cours"); }
   if (onglet === "scenarios") { h[1] ? ouvrirScenario(h[1]) : fermer("sc"); }
+  if (onglet === "pfmp") { h[1] ? ouvrirPfmp(h[1]) : fermer("pfmp"); }
   window.scrollTo(0,0);
 }
 function fermer(p){ $(p+"-liste").classList.remove("cache"); $(p+"-detail").classList.add("cache"); }
@@ -399,6 +429,24 @@ function terminer(){
     .catch(function(){ z.className = "envoi ko"; z.textContent = "⚠ La note n'a pas pu être envoyée. Montre cet écran à ton professeur."; });
 }
 $("btn-recommencer").onclick = function(){ ecranQuiz("qz-accueil"); };
+
+/* ---------- PFMP ---------- */
+$("pfmp-grille").innerHTML = PFMP_DOCS.map(function(d){
+  return "<button class='tuile' onclick=\"location.hash='pfmp/"+d.id+"'\"><span class='badge gris'>"+d.pour+"</span><strong>"+d.icone+" "+d.titre+"</strong></button>";
+}).join("");
+function ouvrirPfmp(id){
+  const d = PFMP_DOCS.find(function(x){ return x.id === id; });
+  if (!d) return fermer("pfmp");
+  $("pfmp-detail").innerHTML = "<div class='barre-doc'><button class='retour' style='margin:0' onclick=\"location.hash='pfmp'\">← Tous les documents</button><button class='btn' onclick='imprimerPfmp()'>🖨️ Imprimer</button></div><div class='doc-pfmp' id='doc-a-imprimer'>"+d.html()+"</div>";
+  $("pfmp-liste").classList.add("cache"); $("pfmp-detail").classList.remove("cache");
+}
+function imprimerPfmp(){
+  const w = window.open("", "_blank");
+  if (!w) { window.print(); return; }
+  w.document.write("<!DOCTYPE html><html lang='fr'><head><meta charset='UTF-8'><title>PFMP</title>"+document.querySelector("style").outerHTML+
+    "<style>body{background:#fff;padding:20px;max-width:800px;margin:auto} @page{margin:14mm}</style></head><body><div class='doc-pfmp'>"+$("doc-a-imprimer").innerHTML+"</div></body></html>");
+  w.document.close(); w.focus(); setTimeout(function(){ w.print(); }, 300);
+}
 
 /* ---------- Évaluation ---------- */
 function rendreEval(id){
