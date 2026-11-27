@@ -95,6 +95,7 @@
     <a href="#cours" data-onglet="cours">Cours</a>
     <a href="#scenarios" data-onglet="scenarios">Scénarios</a>
     <a href="#entrainements" data-onglet="entrainements">Entraînements</a>
+    <a href="#evaluation" data-onglet="evaluation">Évaluation</a>
   </nav>
 </header>
 
@@ -109,6 +110,7 @@
         <button class="tuile" onclick="location.hash='cours'"><span class="badge gris">Savoirs</span><strong>📘 Cours</strong>Une fiche par compétence, avec l'essentiel à retenir.</button>
         <button class="tuile" onclick="location.hash='scenarios'"><span class="badge gris">Pratique</span><strong>🏭 Scénarios</strong>Les missions dans nos entreprises : ÔFil de l'eau, Transport Express+, Logistique Services+, Biomarine.</button>
         <button class="tuile" onclick="location.hash='entrainements'"><span class="badge gris">Entraînement</span><strong>✅ Entraînements</strong>QCM corrigés. Ta note est envoyée au professeur.</button>
+        <button class="tuile" onclick="location.hash='evaluation'"><span class="badge gris">Examen</span><strong>🎓 Guide d'évaluation</strong>Comment se passe chaque épreuve en CCF : E21, E22, E31, E32.</button>
       </div>
     </div>
     <div class="carte">
@@ -160,6 +162,17 @@
     <div id="sc-detail" class="carte cache"></div>
   </section>
 
+  <!-- ÉVALUATION -->
+  <section id="evaluation" class="onglet cache">
+    <div class="carte">
+      <h2>Guide d'évaluation – le CCF</h2>
+      <p>Dans ton Bac Pro, les épreuves professionnelles se passent surtout en <strong>contrôle en cours de formation (CCF)</strong> : tu es évalué(e) pendant ta formation, au lycée et en PFMP. Ce guide explique comment se passe chaque épreuve et comment t'y préparer.</p>
+      <div class="filtres" id="ev-menu"></div>
+    </div>
+    <div id="ev-contenu"></div>
+    <p class="aide">Source : définition des épreuves de l'arrêté du 8 janvier 2025. Les grilles et le calendrier officiels seront précisés par la circulaire nationale d'organisation de la session 2028 : ce guide sera mis à jour à sa parution.</p>
+  </section>
+
   <!-- ENTRAÎNEMENTS -->
   <section id="entrainements" class="onglet cache">
     <div id="qz-accueil" class="carte">
@@ -205,6 +218,7 @@
 <script src="cours.js"></script>
 <script src="scenarios.js"></script>
 <script src="entrainements.js"></script>
+<script src="evaluation.js"></script>
 <script>
 function $(id){ return document.getElementById(id); }
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
@@ -214,7 +228,7 @@ function liste(t){ return "<ul>"+t.map(function(x){ return "<li>"+x+"</li>"; }).
 /* ---------- Navigation par onglets ---------- */
 function router(){
   const h = (location.hash || "#accueil").slice(1).split("/");
-  const onglet = ["accueil","progression","cours","scenarios","entrainements"].indexOf(h[0]) >= 0 ? h[0] : "accueil";
+  const onglet = ["accueil","progression","cours","scenarios","entrainements","evaluation"].indexOf(h[0]) >= 0 ? h[0] : "accueil";
   document.querySelectorAll(".onglet").forEach(function(s){ s.classList.toggle("cache", s.id !== onglet); });
   document.querySelectorAll("nav a").forEach(function(a){ a.classList.toggle("actif", a.dataset.onglet === onglet); });
   if (onglet === "cours") { h[1] ? ouvrirCours(h[1]) : fermer("cours"); }
@@ -385,6 +399,26 @@ function terminer(){
     .catch(function(){ z.className = "envoi ko"; z.textContent = "⚠ La note n'a pas pu être envoyée. Montre cet écran à ton professeur."; });
 }
 $("btn-recommencer").onclick = function(){ ecranQuiz("qz-accueil"); };
+
+/* ---------- Évaluation ---------- */
+function rendreEval(id){
+  let h = "";
+  if (id === "general") {
+    h += "<div class='carte'><h2>Les principes du CCF</h2>"+liste(EVAL_GENERAL.principes)+"</div>";
+    h += "<div class='carte'><h2>Les épreuves et leurs coefficients</h2>"+tableau([["Épreuve","Contenu","Coef."]].concat(EVAL_GENERAL.coefs))+"<p class='aide'>Les épreuves professionnelles (E2 et E3) pèsent 16 coefficients : c'est le cœur de ton diplôme.</p></div>";
+    h += "<div class='carte'><h2>Le calendrier des évaluations</h2>"+tableau([["Quand","Ce qui est évalué"]].concat(EVAL_GENERAL.calendrier))+"</div>";
+  } else {
+    const e = EVALUATION.find(function(x){ return x.id === id; });
+    h += "<div class='carte'><p>"+badgeBloc(e.bloc)+"<span class='badge gris'>"+e.unite+" · coef. "+e.coef+"</span></p><h2>"+e.titre+"</h2><p><strong>Ce que l'épreuve valide :</strong> "+e.valide+"</p><p><strong>Quand :</strong> "+e.quand+"</p></div>";
+    h += "<div class='carte'><h2>En CCF</h2><p><strong>"+e.ccf.resume+"</strong></p>";
+    e.ccf.situations.forEach(function(s){ h += "<div class='mission'><strong>"+s.titre+"</strong><p>"+s.texte+"</p></div>"; });
+    h += "<div class='aretenir'><h4>📌 Calcul et points clés</h4><p>"+e.ccf.calcul+"</p></div></div>";
+    h += "<div class='carte'><h2>En forme ponctuelle</h2><p class='aide'>Pour les candidats qui ne passent pas l'épreuve en CCF.</p><p>"+e.ponctuel+"</p></div>";
+    h += "<div class='carte'><div class='conscient'><h4>🎒 Élève : comment je me prépare</h4>"+liste(e.eleve)+"</div><div class='securite' style='background:#f3f0fb;border-color:var(--b4)'><h4 style='color:var(--b4)'>👩‍🏫 Professeur : organisation</h4>"+liste(e.prof)+"</div></div>";
+  }
+  $("ev-contenu").innerHTML = h;
+}
+filtres("ev-menu", [{v:"general",label:"Vue d'ensemble"}].concat(EVALUATION.map(function(e){ return {v:e.id,label:e.id+" – Bloc "+e.bloc}; })).map(function(o,i){ return i===0 ? {v:"tous",label:o.label,real:"general"} : o; }), function(f){ rendreEval(f === "tous" ? "general" : f); });
 
 router();
 </script>
