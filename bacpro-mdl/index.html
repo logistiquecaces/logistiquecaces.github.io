@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bac Pro Métiers de la logistique – Cours, scénarios, entraînements</title>
+<style>
+  :root { --bleu:#1e3a5f; --orange:#f28c28; --vert:#1f9d55; --rouge:#d64545; --gris:#6b7785; --fond:#f4f6f9;
+          --b1:#2b6cb0; --b2:#c05621; --b3:#2f855a; --b4:#805ad5; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:Arial, Helvetica, sans-serif; background:var(--fond); color:#1f2933; line-height:1.55; }
+  header { background:var(--bleu); color:#fff; padding:24px 20px 0; text-align:center; border-bottom:6px solid var(--orange); }
+  header h1 { margin:0 0 4px; font-size:1.7rem; }
+  header p { margin:0 0 16px; opacity:.85; }
+  nav { display:flex; justify-content:center; flex-wrap:wrap; gap:4px; }
+  nav a { color:#fff; text-decoration:none; padding:12px 16px; font-weight:bold; border-radius:8px 8px 0 0; }
+  nav a.actif { background:var(--fond); color:var(--bleu); }
+  nav a:not(.actif):hover { background:rgba(255,255,255,.12); }
+  main { max-width:960px; margin:0 auto; padding:24px 16px 40px; }
+  .carte { background:#fff; border-radius:10px; padding:22px; margin-bottom:18px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  h2 { margin-top:0; color:var(--bleu); font-size:1.3rem; }
+  h3 { color:var(--bleu); margin:18px 0 8px; font-size:1.08rem; }
+  .aide { font-size:.88rem; color:var(--gris); }
+  .cache { display:none !important; }
+  .filtres { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .filtres button { border:2px solid #d5dbe3; background:#fff; border-radius:20px; padding:7px 14px; cursor:pointer; font-size:.9rem; }
+  .filtres button.actif { border-color:var(--bleu); background:var(--bleu); color:#fff; }
+  .grille { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:14px; }
+  .tuile { background:#fff; border:2px solid #e3e8ef; border-radius:10px; padding:16px; cursor:pointer; text-align:left; font-size:.95rem; }
+  .tuile:hover { border-color:var(--orange); }
+  .tuile strong { display:block; color:var(--bleu); margin:6px 0 4px; font-size:1rem; }
+  .badge { display:inline-block; font-size:.75rem; font-weight:bold; color:#fff; padding:2px 8px; border-radius:10px; margin-right:4px; }
+  .badge.b1 { background:var(--b1); } .badge.b2 { background:var(--b2); } .badge.b3 { background:var(--b3); } .badge.b4 { background:var(--b4); }
+  .badge.gris { background:var(--gris); } .badge.pfmp { background:var(--orange); }
+  .retour { background:none; border:none; color:var(--bleu); font-weight:bold; cursor:pointer; font-size:1rem; padding:0; margin-bottom:12px; }
+  .aretenir { background:#fff8ec; border-left:5px solid var(--orange); padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; }
+  .aretenir h4 { margin:0 0 6px; color:#a15c00; }
+  .securite { background:#fdecec; border-left:5px solid var(--rouge); padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; }
+  .securite h4 { margin:0 0 6px; color:var(--rouge); }
+  .conscient { background:#eef4fb; border-left:5px solid var(--b1); padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; }
+  .conscient h4 { margin:0 0 6px; color:var(--b1); }
+  table { width:100%; border-collapse:collapse; margin:10px 0; font-size:.92rem; }
+  th, td { border:1px solid #d5dbe3; padding:8px; text-align:left; vertical-align:top; }
+  th { background:#eef1f5; color:var(--bleu); }
+  .mission { border:1px solid #e3e8ef; border-radius:8px; padding:12px 14px; margin:10px 0; }
+  .mission .num { display:inline-block; background:var(--bleu); color:#fff; font-weight:bold; border-radius:6px; padding:1px 8px; margin-right:6px; }
+  .docs { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
+  .doc { border-radius:8px; padding:12px 14px; font-size:.9rem; white-space:pre-line; }
+  .doc .type { display:block; font-weight:bold; font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px; white-space:normal; }
+  .doc.mail { background:#f5f7fa; border:1px solid #cfd6df; }
+  .doc.sms { background:#e6f6ec; border:1px solid #b9e2c8; border-radius:16px 16px 16px 4px; }
+  .doc.postit { background:#fff59d; transform:rotate(-1deg); box-shadow:2px 3px 6px rgba(0,0,0,.12); font-family:"Comic Sans MS","Segoe Print",cursive; }
+  .doc.note { background:#fff; border:2px solid var(--bleu); }
+  .doc.form { background:#fff; border:1px dashed var(--gris); font-family:"Courier New",monospace; }
+  .alea { background:#fff0f0; border:2px dashed var(--rouge); border-radius:8px; padding:10px 14px; margin:8px 0; }
+  details summary { cursor:pointer; font-weight:bold; color:var(--bleu); }
+  .frise { position:relative; padding-left:26px; }
+  .frise::before { content:""; position:absolute; left:9px; top:0; bottom:0; width:3px; background:#d5dbe3; }
+  .phase { position:relative; }
+  .phase::before { content:""; position:absolute; left:-23px; top:24px; width:14px; height:14px; border-radius:50%; background:var(--orange); border:3px solid #fff; box-shadow:0 0 0 2px var(--orange); }
+  .phase.pfmp::before { background:var(--bleu); box-shadow:0 0 0 2px var(--bleu); }
+  .phase h3 { margin-top:0; }
+  .lien { color:var(--bleu); font-weight:bold; cursor:pointer; text-decoration:underline; background:none; border:none; padding:0; font-size:inherit; }
+  .annee-titre { background:var(--bleu); color:#fff; padding:10px 16px; border-radius:8px; margin:24px 0 14px; font-size:1.1rem; }
+  label { display:block; font-weight:bold; margin:12px 0 6px; }
+  input, select { width:100%; padding:11px; font-size:1rem; border:2px solid #d5dbe3; border-radius:8px; }
+  .btn { background:var(--bleu); color:#fff; border:none; border-radius:8px; padding:13px 22px; font-size:1rem; font-weight:bold; cursor:pointer; }
+  .btn:disabled { background:#aab4c0; cursor:not-allowed; }
+  .btn.secondaire { background:#fff; color:var(--bleu); border:2px solid var(--bleu); }
+  .barre { height:10px; background:#e3e8ef; border-radius:5px; overflow:hidden; margin-bottom:14px; }
+  .barre div { height:100%; background:var(--orange); transition:width .3s; }
+  .question { font-size:1.12rem; font-weight:bold; margin-bottom:16px; white-space:pre-line; }
+  .choix { display:block; width:100%; text-align:left; background:#fff; border:2px solid #d5dbe3; border-radius:8px; padding:13px; margin-bottom:10px; font-size:1rem; cursor:pointer; }
+  .choix:hover { border-color:var(--bleu); } .choix.choisi { border-color:var(--bleu); background:#e8eef6; }
+  .actions { display:flex; justify-content:space-between; gap:10px; margin-top:16px; }
+  .score { text-align:center; font-size:3rem; font-weight:bold; margin:10px 0; }
+  .reussi { color:var(--vert); } .echec { color:var(--rouge); }
+  .envoi { text-align:center; padding:10px; border-radius:8px; margin:10px 0; font-size:.95rem; }
+  .envoi.ok { background:#e6f6ec; color:var(--vert); } .envoi.attente { background:#fff4e5; color:#a15c00; } .envoi.ko { background:#fdecec; color:var(--rouge); }
+  .corr { border-left:5px solid; padding:10px 14px; margin-bottom:12px; background:#fafbfc; border-radius:0 8px 8px 0; }
+  .corr.bon { border-color:var(--vert); } .corr.faux { border-color:var(--rouge); }
+  .corr p { margin:4px 0; white-space:pre-line; } .expl { color:var(--gris); font-size:.92rem; }
+  footer { text-align:center; color:var(--gris); font-size:.8rem; padding:16px; }
+  footer a { color:var(--gris); }
+  @media print { header nav, .retour, .filtres, footer { display:none; } body { background:#fff; } .carte { box-shadow:none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Bac Pro Métiers de la logistique</h1>
+  <p>Cours · Scénarios · Entraînements · Progression sur 2 ans (1re → Terminale)</p>
+  <nav>
+    <a href="#accueil" data-onglet="accueil">Accueil</a>
+    <a href="#progression" data-onglet="progression">Progression</a>
+    <a href="#cours" data-onglet="cours">Cours</a>
+    <a href="#scenarios" data-onglet="scenarios">Scénarios</a>
+    <a href="#entrainements" data-onglet="entrainements">Entraînements</a>
+  </nav>
+</header>
+
+<main>
+  <!-- ACCUEIL -->
+  <section id="accueil" class="onglet">
+    <div class="carte">
+      <h2>Bienvenue</h2>
+      <p>Ce site accompagne ta formation en <strong>Bac Pro Métiers de la logistique</strong> (référentiel du 8 janvier 2025). Tu y trouves tout ce qu'il faut pour travailler en classe, sur le plateau technique et à la maison.</p>
+      <div class="grille" style="margin-top:16px">
+        <button class="tuile" onclick="location.hash='progression'"><span class="badge gris">Plan</span><strong>📅 Progression sur 2 ans</strong>Ce qu'on fait, quand, et quelles épreuves t'attendent.</button>
+        <button class="tuile" onclick="location.hash='cours'"><span class="badge gris">Savoirs</span><strong>📘 Cours</strong>Une fiche par compétence, avec l'essentiel à retenir.</button>
+        <button class="tuile" onclick="location.hash='scenarios'"><span class="badge gris">Pratique</span><strong>🏭 Scénarios</strong>Les missions dans nos entreprises : ÔFil de l'eau, Transport Express+, Logistique Services+, Biomarine.</button>
+        <button class="tuile" onclick="location.hash='entrainements'"><span class="badge gris">Entraînement</span><strong>✅ Entraînements</strong>QCM corrigés. Ta note est envoyée au professeur.</button>
+      </div>
+    </div>
+    <div class="carte">
+      <h2>Les 4 blocs de compétences</h2>
+      <table>
+        <tr><th>Bloc</th><th>Intitulé</th><th>Épreuve</th></tr>
+        <tr><td><span class="badge b1">Bloc 1</span></td><td>Réaliser des opérations logistiques dans un environnement sécurisé</td><td>E31 (coef. 4)</td></tr>
+        <tr><td><span class="badge b2">Bloc 2</span></td><td>Satisfaire le client par la coordination des activités logistiques</td><td>E21 (coef. 4)</td></tr>
+        <tr><td><span class="badge b3">Bloc 3</span></td><td>Contribuer de manière responsable à l'efficacité des activités logistiques</td><td>E22 (coef. 5)</td></tr>
+        <tr><td><span class="badge b4">Bloc 4</span></td><td>Conduire en sécurité des engins de manutention</td><td>E32 (coef. 2)</td></tr>
+      </table>
+      <p class="aide">Bloc 1 = produits standards. Les produits spécifiques (dangereux, température dirigée, fragiles, pharmaceutiques) sont travaillés dans le bloc 3.</p>
+    </div>
+  </section>
+
+  <!-- PROGRESSION -->
+  <section id="progression" class="onglet cache">
+    <div class="carte">
+      <h2>Progression pédagogique sur 2 ans</h2>
+      <p class="aide">Première cohorte du nouveau Bac Pro : 1re en 2026-2027, Terminale en 2027-2028, examen en 2028. Les dates de PFMP sont ajustées chaque année selon le calendrier du lycée.</p>
+      <div id="pg-tableau"></div>
+    </div>
+    <div id="pg-frise"></div>
+  </section>
+
+  <!-- COURS -->
+  <section id="cours" class="onglet cache">
+    <div id="cours-liste">
+      <div class="carte">
+        <h2>Fiches de cours</h2>
+        <p class="aide">Une fiche par compétence du référentiel. Lis-la après le scénario, puis complète ta propre trace écrite avec les questions de fin de fiche.</p>
+        <div class="filtres" id="cours-filtres"></div>
+        <div class="grille" id="cours-grille"></div>
+      </div>
+    </div>
+    <div id="cours-detail" class="carte cache"></div>
+  </section>
+
+  <!-- SCÉNARIOS -->
+  <section id="scenarios" class="onglet cache">
+    <div id="sc-liste">
+      <div class="carte">
+        <h2>Scénarios professionnels</h2>
+        <p class="aide">Chaque scénario te place dans une entreprise de notre groupe TRANSLOG France. Tu es acteur : tu reçois des documents, tu réalises des missions, et un aléa peut arriver à tout moment.</p>
+        <div class="filtres" id="sc-filtres"></div>
+        <div class="grille" id="sc-grille"></div>
+      </div>
+    </div>
+    <div id="sc-detail" class="carte cache"></div>
+  </section>
+
+  <!-- ENTRAÎNEMENTS -->
+  <section id="entrainements" class="onglet cache">
+    <div id="qz-accueil" class="carte">
+      <h2>Entraînements</h2>
+      <label for="nom">Prénom et initiale du nom</label>
+      <input id="nom" type="text" maxlength="40" placeholder="Exemple : Karim B." autocomplete="off">
+      <label for="classe">Classe</label>
+      <select id="classe">
+        <option value="">-- Choisis ta classe --</option>
+        <option>1BACLOG</option><option>TBACLOG</option><option>Autre</option>
+      </select>
+      <div id="msg-accueil" class="aide" style="color:var(--rouge);margin-top:6px"></div>
+      <h3>Choisis un entraînement</h3>
+      <div class="filtres" id="qz-filtres"></div>
+      <div class="grille" id="qz-grille"></div>
+      <p class="aide" style="margin-top:16px">Bloc 4 (CACES R489) : les 10 sujets théoriques sont sur <a href="../">le site d'entraînement CACES</a>.</p>
+    </div>
+    <div id="qz-quiz" class="carte cache">
+      <div class="aide" id="compteur"></div>
+      <div class="barre"><div id="barre"></div></div>
+      <div class="question" id="question"></div>
+      <div id="choix"></div>
+      <div class="actions">
+        <button class="btn secondaire" id="btn-prec">← Précédente</button>
+        <button class="btn" id="btn-suiv" disabled>Suivante →</button>
+      </div>
+    </div>
+    <div id="qz-resultat" class="cache">
+      <div class="carte" style="text-align:center">
+        <h2 id="res-titre"></h2>
+        <div class="score" id="res-score"></div>
+        <div id="res-message"></div>
+        <div class="envoi attente" id="res-envoi"></div>
+        <button class="btn" id="btn-recommencer" style="margin-top:10px">Faire un autre entraînement</button>
+      </div>
+      <div class="carte"><h2>Correction</h2><div id="res-correction"></div></div>
+    </div>
+  </section>
+</main>
+<footer>Bac Pro Métiers de la logistique – ressources pédagogiques · <a href="../">Entraînement CACES R489</a><br>Entreprises et documents fictifs, créés pour la formation.</footer>
+
+<script src="progression.js"></script>
+<script src="cours.js"></script>
+<script src="scenarios.js"></script>
+<script src="entrainements.js"></script>
+<script>
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function badgeBloc(b){ return "<span class='badge b"+b+"'>Bloc "+b+"</span>"; }
+function liste(t){ return "<ul>"+t.map(function(x){ return "<li>"+x+"</li>"; }).join("")+"</ul>"; }
+
+/* ---------- Navigation par onglets ---------- */
+function router(){
+  const h = (location.hash || "#accueil").slice(1).split("/");
+  const onglet = ["accueil","progression","cours","scenarios","entrainements"].indexOf(h[0]) >= 0 ? h[0] : "accueil";
+  document.querySelectorAll(".onglet").forEach(function(s){ s.classList.toggle("cache", s.id !== onglet); });
+  document.querySelectorAll("nav a").forEach(function(a){ a.classList.toggle("actif", a.dataset.onglet === onglet); });
+  if (onglet === "cours") { h[1] ? ouvrirCours(h[1]) : fermer("cours"); }
+  if (onglet === "scenarios") { h[1] ? ouvrirScenario(h[1]) : fermer("sc"); }
+  window.scrollTo(0,0);
+}
+function fermer(p){ $(p+"-liste").classList.remove("cache"); $(p+"-detail").classList.add("cache"); }
+window.addEventListener("hashchange", router);
+
+/* ---------- Filtres ---------- */
+function filtres(zone, options, rendu){
+  let actif = "tous";
+  function dessiner(){
+    $(zone).innerHTML = "";
+    options.forEach(function(o){
+      const b = document.createElement("button");
+      b.textContent = o.label; if (o.v === actif) b.className = "actif";
+      b.onclick = function(){ actif = o.v; dessiner(); rendu(actif); };
+      $(zone).appendChild(b);
+    });
+  }
+  dessiner(); rendu(actif);
+}
+const OPT = [{v:"tous",label:"Tout"},{v:"1re",label:"1re"},{v:"Tle",label:"Terminale"},{v:"b1",label:"Bloc 1"},{v:"b2",label:"Bloc 2"},{v:"b3",label:"Bloc 3"},{v:"b4",label:"Bloc 4"}];
+function garde(x, f){
+  if (f === "tous") return true;
+  if (f === "1re" || f === "Tle") return x.classe === f || x.classe === "1re/Tle";
+  return (x.blocs || [x.bloc]).indexOf(+f.slice(1)) >= 0;
+}
+
+/* ---------- Progression ---------- */
+(function(){
+  let t = "<table><tr><th>Année</th><th>Période</th><th>Thème</th><th>Blocs</th><th>Temps fort</th></tr>";
+  PROGRESSION.forEach(function(p){
+    t += "<tr><td>"+p.annee+"</td><td>"+p.periode+"</td><td>"+p.titre+"</td><td>"+p.blocs.map(badgeBloc).join(" ")+(p.pfmp?" <span class='badge pfmp'>PFMP</span>":"")+"</td><td>"+(p.tempsFort||"")+"</td></tr>";
+  });
+  $("pg-tableau").innerHTML = t + "</table>";
+  let html = "", annee = "";
+  PROGRESSION.forEach(function(p){
+    if (p.annee !== annee) { annee = p.annee; html += (html ? "</div>" : "") + "<div class='annee-titre'>"+(annee === "1re" ? "Classe de 1re — les fondamentaux" : "Classe de Terminale — approfondir et certifier")+"</div><div class='frise'>"; }
+    html += "<div class='carte phase"+(p.pfmp?" pfmp":"")+"'><h3>Phase "+p.n+" · "+p.periode+" — "+p.titre+"</h3>"+
+      "<p>"+p.blocs.map(badgeBloc).join(" ")+" <span class='aide'>"+p.duree+"</span></p>"+
+      "<p><strong>Compétences :</strong> "+p.competences.map(function(c){ return COURS.some(function(x){return x.code===c;}) ? "<button class='lien' onclick=\"location.hash='cours/"+c+"'\">"+c+"</button>" : c; }).join(", ")+"</p>"+
+      (p.scenarios.length ? "<p><strong>Scénarios :</strong> "+p.scenarios.map(function(id){ const s = SCENARIOS.find(function(x){return x.id===id;}); return s ? "<button class='lien' onclick=\"location.hash='scenarios/"+id+"'\">"+s.id+" – "+s.titre+"</button>" : id; }).join(" · ")+"</p>" : "")+
+      (p.entrainements.length ? "<p><strong>Entraînements :</strong> "+p.entrainements.map(function(id){ const q = ENTRAINEMENTS.find(function(x){return x.id===id;}); return q ? "<button class='lien' onclick=\"location.hash='entrainements'\">"+q.titre+"</button>" : id; }).join(" · ")+"</p>" : "")+
+      (p.pfmp ? "<p><span class='badge pfmp'>PFMP</span> "+p.pfmp+"</p>" : "")+
+      "<p><strong>Évaluation :</strong> "+p.evaluation+"</p></div>";
+  });
+  $("pg-frise").innerHTML = html + "</div>";
+})();
+
+/* ---------- Cours ---------- */
+filtres("cours-filtres", OPT, function(f){
+  $("cours-grille").innerHTML = COURS.filter(function(c){ return garde(c,f); }).map(function(c){
+    return "<button class='tuile' onclick=\"location.hash='cours/"+c.code+"'\">"+badgeBloc(c.bloc)+"<span class='badge gris'>"+c.classe+"</span><strong>"+c.code+" – "+c.titre+"</strong><span class='aide'>"+c.resume+"</span></button>";
+  }).join("");
+});
+function ouvrirCours(code){
+  const c = COURS.find(function(x){ return x.code === code; });
+  if (!c) return fermer("cours");
+  let h = "<button class='retour' onclick=\"location.hash='cours'\">← Toutes les fiches</button>"+
+    "<p>"+badgeBloc(c.bloc)+"<span class='badge gris'>"+c.classe+"</span></p><h2>"+c.code+" – "+c.titre+"</h2>"+
+    "<p><strong>Objectif :</strong> "+c.objectif+"</p>";
+  c.sections.forEach(function(s){ h += "<h3>"+s.t+"</h3>" + (s.p ? "<p>"+s.p+"</p>" : "") + (s.l ? liste(s.l) : "") + (s.tab ? tableau(s.tab) : ""); });
+  h += "<div class='aretenir'><h4>📌 À retenir</h4>"+liste(c.retenir)+"</div>";
+  if (c.vocabulaire) h += "<h3>Vocabulaire</h3><table>"+c.vocabulaire.map(function(v){ return "<tr><th style='width:30%'>"+v[0]+"</th><td>"+v[1]+"</td></tr>"; }).join("")+"</table>";
+  h += "<div class='conscient'><h4>✏️ Ma trace écrite</h4><p>Réponds avec tes mots dans ton classeur :</p>"+liste(c.questions)+"</div>";
+  const sc = SCENARIOS.filter(function(s){ return s.competences.indexOf(c.code) >= 0; });
+  if (sc.length) h += "<p><strong>Scénarios liés :</strong> "+sc.map(function(s){ return "<button class='lien' onclick=\"location.hash='scenarios/"+s.id+"'\">"+s.id+" – "+s.titre+"</button>"; }).join(" · ")+"</p>";
+  $("cours-detail").innerHTML = h;
+  $("cours-liste").classList.add("cache"); $("cours-detail").classList.remove("cache");
+}
+function tableau(t){ return "<table><tr>"+t[0].map(function(x){return "<th>"+x+"</th>";}).join("")+"</tr>"+t.slice(1).map(function(r){ return "<tr>"+r.map(function(x){return "<td>"+x+"</td>";}).join("")+"</tr>"; }).join("")+"</table>"; }
+
+/* ---------- Scénarios ---------- */
+filtres("sc-filtres", OPT, function(f){
+  $("sc-grille").innerHTML = SCENARIOS.filter(function(s){ return garde(s,f); }).map(function(s){
+    return "<button class='tuile' onclick=\"location.hash='scenarios/"+s.id+"'\">"+s.blocs.map(badgeBloc).join("")+"<span class='badge gris'>"+s.classe+"</span><strong>"+s.id+" – "+s.titre+"</strong><span class='aide'>"+s.entreprise+" · "+s.duree+"</span></button>";
+  }).join("");
+});
+function ouvrirScenario(id){
+  const s = SCENARIOS.find(function(x){ return x.id === id; });
+  if (!s) return fermer("sc");
+  let h = "<button class='retour' onclick=\"location.hash='scenarios'\">← Tous les scénarios</button>"+
+    "<p>"+s.blocs.map(badgeBloc).join("")+"<span class='badge gris'>"+s.classe+"</span></p><h2>"+s.id+" – "+s.titre+"</h2>"+
+    "<table><tr><th>Entreprise</th><td>"+s.entreprise+"</td><th>Durée</th><td>"+s.duree+"</td></tr>"+
+    "<tr><th>Compétences</th><td colspan='3'>"+s.competences.map(function(c){ return "<button class='lien' onclick=\"location.hash='cours/"+c+"'\">"+c+"</button>"; }).join(", ")+"</td></tr>"+
+    "<tr><th>Lieu</th><td colspan='3'>"+s.lieu+"</td></tr></table>"+
+    "<h3>🚨 L'événement</h3><p>"+s.evenement+"</p>"+
+    "<h3>🏢 Le contexte</h3><p>"+s.contexte+"</p>"+
+    "<h3>👷 Tes missions</h3>";
+  s.missions.forEach(function(m){
+    h += "<div class='mission'><span class='num'>"+m.n+"</span><strong>"+m.titre+"</strong> <span class='aide'>· "+m.duree+"</span><p>"+m.consigne+"</p><p class='aide'><strong>Livrable :</strong> "+m.livrable+"</p></div>";
+  });
+  h += "<h3>📄 Documents</h3><div class='docs'>"+s.documents.map(function(d){ return "<div class='doc "+d.style+"'><span class='type'>"+d.type+"</span>"+esc(d.texte)+"</div>"; }).join("")+"</div>";
+  h += "<h3>⚠️ Aléa</h3><details><summary>Le professeur te dira quand ouvrir cet aléa</summary>"+s.aleas.map(function(a){ return "<div class='alea'>"+a+"</div>"; }).join("")+"</details>";
+  h += "<h3>🎯 Ce qu'on attend de toi</h3><table><tr><th>Compétence</th><th>Indicateurs de réussite</th></tr>"+s.indicateurs.map(function(i){ return "<tr><td>"+i[0]+"</td><td>"+i[1]+"</td></tr>"; }).join("")+"</table>";
+  h += "<div class='securite'><h4>⛑️ Sécurité</h4>"+liste(s.securite)+"</div>";
+  h += "<div class='conscient'><h4>💡 Ce que j'ai appris (conscientisation)</h4>"+liste(s.conscientisation)+"</div>";
+  h += "<div class='aretenir'><h4>📝 Mon bilan de mission</h4><p>Dessine la supply chain de l'entreprise et place-toi dessus. Puis écris <strong>150 mots maximum</strong> :</p>"+liste(["Ce que j'ai fait et mon rôle dans l'équipe","Une difficulté rencontrée et comment je l'ai surmontée","Ce que je sais faire maintenant (en lien avec "+s.competences.join(", ")+")"])+"</div>";
+  $("sc-detail").innerHTML = h;
+  $("sc-liste").classList.add("cache"); $("sc-detail").classList.remove("cache");
+}
+
+/* ---------- Entraînements (QCM) ---------- */
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSejRBhQFCmr4dJ2LnD1WIToEpmIb-2YtmrfCsSR0_1lrRGSPA/formResponse";
+const CHAMP_NOM = "entry.609267388", CHAMP_CLASSE = "entry.1583235432", CHAMP_SUJET = "entry.1448527077", CHAMP_NOTE = "entry.803834284";
+const SEUIL = 12;
+let eleve = {}, sujet = null, questions = [], reponses = [], index = 0;
+function melanger(t){ t = t.slice(); for (let i = t.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); const x = t[i]; t[i] = t[j]; t[j] = x; } return t; }
+function ecranQuiz(id){ ["qz-accueil","qz-quiz","qz-resultat"].forEach(function(e){ $(e).classList.toggle("cache", e !== id); }); window.scrollTo(0,0); }
+filtres("qz-filtres", OPT, function(f){
+  $("qz-grille").innerHTML = "";
+  ENTRAINEMENTS.filter(function(q){ return garde(q,f); }).forEach(function(q){
+    const b = document.createElement("button");
+    b.className = "tuile";
+    b.innerHTML = badgeBloc(q.bloc)+"<span class='badge gris'>"+q.classe+"</span><strong>"+q.titre+"</strong><span class='aide'>"+q.questions.length+" questions · "+q.competences.join(", ")+"</span>";
+    b.onclick = function(){ demarrer(q); };
+    $("qz-grille").appendChild(b);
+  });
+});
+function demarrer(s){
+  const nom = $("nom").value.trim(), classe = $("classe").value;
+  if (nom.length < 2 || !classe) { $("msg-accueil").textContent = "Indique ton prénom, l'initiale de ton nom et ta classe avant de choisir un entraînement."; window.scrollTo(0,0); return; }
+  $("msg-accueil").textContent = "";
+  eleve = { nom:nom, classe:classe }; sujet = s;
+  questions = s.questions.map(function(q){ const o = melanger(q.c.map(function(_,i){return i;})); return { q:q.q, c:o.map(function(i){return q.c[i];}), a:o.indexOf(q.a), e:q.e }; });
+  reponses = new Array(questions.length).fill(null); index = 0;
+  afficher(); ecranQuiz("qz-quiz");
+}
+function afficher(){
+  const q = questions[index];
+  $("compteur").textContent = sujet.titre+" — Question "+(index+1)+" / "+questions.length;
+  $("barre").style.width = (index/questions.length*100)+"%";
+  $("question").textContent = q.q; $("choix").innerHTML = "";
+  q.c.forEach(function(t,i){
+    const b = document.createElement("button");
+    b.className = "choix"+(reponses[index] === i ? " choisi" : "");
+    b.textContent = String.fromCharCode(65+i)+". "+t;
+    b.onclick = function(){ reponses[index] = i; afficher(); };
+    $("choix").appendChild(b);
+  });
+  $("btn-prec").style.visibility = index === 0 ? "hidden" : "visible";
+  $("btn-suiv").disabled = reponses[index] === null;
+  $("btn-suiv").textContent = index === questions.length-1 ? "Terminer ✓" : "Suivante →";
+}
+$("btn-prec").onclick = function(){ if (index > 0) { index--; afficher(); } };
+$("btn-suiv").onclick = function(){ if (reponses[index] === null) return; if (index < questions.length-1) { index++; afficher(); } else terminer(); };
+function terminer(){
+  let bonnes = 0; questions.forEach(function(q,i){ if (reponses[i] === q.a) bonnes++; });
+  const note = Math.round(bonnes/questions.length*20*10)/10, ok = note >= SEUIL;
+  $("res-titre").textContent = eleve.nom+" — "+sujet.titre;
+  $("res-score").textContent = note+" / 20"; $("res-score").className = "score "+(ok?"reussi":"echec");
+  $("res-message").textContent = bonnes+" bonne(s) réponse(s) sur "+questions.length+". "+(ok ? "Bravo !" : "Relis la correction et la fiche de cours, puis recommence.");
+  $("res-correction").innerHTML = questions.map(function(q,i){
+    const b = reponses[i] === q.a;
+    return "<div class='corr "+(b?"bon":"faux")+"'><p><strong>"+(i+1)+". "+esc(q.q)+"</strong></p>"+
+      (b ? "<p>✅ "+esc(q.c[q.a])+"</p>" : "<p>❌ Ta réponse : "+esc(q.c[reponses[i]])+"</p><p>✅ Bonne réponse : "+esc(q.c[q.a])+"</p>")+
+      "<p class='expl'>"+esc(q.e)+"</p></div>";
+  }).join("");
+  ecranQuiz("qz-resultat");
+  const z = $("res-envoi"); z.className = "envoi attente"; z.textContent = "Envoi de ta note au professeur…";
+  const d = new URLSearchParams();
+  d.append(CHAMP_NOM, eleve.nom); d.append(CHAMP_CLASSE, eleve.classe);
+  d.append(CHAMP_SUJET, "MDL – "+sujet.titre); d.append(CHAMP_NOTE, note+"/20 ("+bonnes+"/"+questions.length+")");
+  fetch(FORM_URL, { method:"POST", mode:"no-cors", body:d })
+    .then(function(){ z.className = "envoi ok"; z.textContent = "✓ Ta note a été envoyée à ton professeur."; })
+    .catch(function(){ z.className = "envoi ko"; z.textContent = "⚠ La note n'a pas pu être envoyée. Montre cet écran à ton professeur."; });
+}
+$("btn-recommencer").onclick = function(){ ecranQuiz("qz-accueil"); };
+
+router();
+</script>
+</body>
+</html>
